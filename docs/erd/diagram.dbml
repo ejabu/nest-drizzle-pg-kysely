@@ -1,0 +1,45 @@
+table books_to_authors {
+  author_id integer
+  book_id integer
+
+  indexes {
+    (book_id, author_id) [pk]
+    (book_id, author_id) [pk]
+  }
+}
+
+table user {
+  id serial [pk, not null, increment]
+  name text
+}
+
+table book {
+  id serial [pk, not null, increment]
+  name text
+  issue_category varchar(255) [not null]
+}
+
+table issue {
+  id text [pk, not null]
+  workoutId uuid
+  source varchar(30) [not null]
+  sourceId varchar(255) [not null]
+  title text [not null]
+  severity integer [not null]
+  confidence integer [not null]
+  category varchar(100) [not null]
+  issueCategory varchar(255) [not null]
+  issueSubcategory varchar(255) [not null]
+  cveInfo text
+  description text
+  risk text
+  mitigation text
+  exploit text
+  createdAt timestamp [not null, default: `now()`]
+  updatedAt timestamp
+  mappingUpdatedAt timestamp
+}
+
+ref books_to_authors_author_id_user_id_fk: books_to_authors.author_id > user.id [delete: no action, update: no action]
+
+ref books_to_authors_book_id_book_id_fk: books_to_authors.book_id > book.id [delete: no action, update: no action]

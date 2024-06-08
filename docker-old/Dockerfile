@@ -1,0 +1,18 @@
+FROM node:18.19.0
+
+ARG VERDACCIO_URL
+ARG VERDACCIO_NPM_TOKEN
+
+WORKDIR /app
+
+COPY package*.json .npmrc pnpm-lock.yaml ./
+
+RUN npm install --global pnpm@6
+
+RUN pnpm install
+
+COPY . .
+
+RUN pnpm run build
+
+CMD ["npm", "run", "start:prod"]

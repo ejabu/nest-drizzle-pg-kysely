@@ -18,7 +18,7 @@ export const issue = pgTable('issue', {
   category: varchar('category', { length: 100 }).notNull(),
   issueCategory: varchar('issueCategory', { length: 255 }).notNull(),
   issueSubcategory: varchar('issueSubcategory', { length: 255 }).notNull(),
-  cve_info: text('cveInfo'),
+  cveInfo: text('cveInfo'),
   description: text('description'),
   risk: text('risk'),
   mitigation: text('mitigation'),

@@ -20,7 +20,7 @@
    ```
 
 5. Run this service with this command:
-  ```sh
+   ```sh
    pnpm start
    ```
    or with watch mode
