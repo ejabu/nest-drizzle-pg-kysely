@@ -1,0 +1,13 @@
+#!/bin/bash
+
+DIR="$( cd "$( dirname "$0" )" && pwd )"
+
+GIT_URL=$(cd $DIR; git config --get remote.origin.url)
+
+# this line converts git@bitbucket.org:autobahn-security/kubernetes-manifest.git to kubernetes-manifest
+REPOSITORY_NAME=$(echo $GIT_URL | sed -rn 's/^.*\/(.*).git$/\1/p')
+
+# spawn new subshell: git pull kubernetes-manifest repo, clone if does not exists
+(cd $DIR/..; git -C kubernetes-manifest pull || git clone git@bitbucket.org:autobahn-security/kubernetes-manifest.git || true)
+
+$DIR/../kubernetes-manifest/scripts/start_dev $REPOSITORY_NAME
