@@ -13,6 +13,20 @@ const INSERT_QUERY = `
 
 @Injectable()
 export class UserRepo {
+  async bulkUpsert(rows: NewIssues[], trx: Transaction) {
+    const query = bulkInsert(rows);
+    try {
+      const result = await trx.query(query.sql, query.parameters);
+      Logger.log('Done');
+      return result;
+    } catch (error) {
+      Logger.log('Error');
+    }
+  }
+
+  /**
+   * @deprecated First trial of client
+   */
   async insertUserWithClient() {
     const client = new Client({
       database: 'horizontal1',
@@ -33,6 +47,9 @@ export class UserRepo {
     return false;
   }
 
+  /**
+   * @deprecated using Pool
+   */
   async insertUserWithPool() {
     const pool = new Pool({
       database: 'horizontal1',
@@ -52,16 +69,5 @@ export class UserRepo {
     }
     Logger.log('Done');
     return true;
-  }
-
-  async bulkUpsert(rows: NewIssues[], trx: Transaction) {
-    const query = bulkInsert(rows);
-    try {
-      const result = await trx.query(query.sql, query.parameters);
-      Logger.log('Done');
-      return result;
-    } catch (error) {
-      Logger.log('Error');
-    }
   }
 }

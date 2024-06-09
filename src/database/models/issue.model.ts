@@ -1,10 +1,12 @@
 import { InferAttributes, InferCreationAttributes } from 'sequelize';
 import {
   Column,
+  CreatedAt,
   DataType,
   Model,
   PrimaryKey,
   Table,
+  UpdatedAt,
 } from 'sequelize-typescript';
 
 @Table({ tableName: 'issue', timestamps: false })
@@ -14,61 +16,30 @@ export class Issue extends Model<
 > {
   @PrimaryKey
   @Column({
-    type: DataType.UUID,
-    allowNull: false,
+    type: DataType.STRING,
     unique: true,
+    field: 'id',
   })
   id: string;
+
+  @Column({
+    type: DataType.UUID,
+    field: 'workout_id',
+  })
+  workoutId?: string;
 
   @Column({
     type: DataType.STRING,
     allowNull: false,
   })
-  vulnerability_id: string;
+  source: string;
 
   @Column({
-    type: DataType.INTEGER,
+    type: DataType.STRING,
     allowNull: false,
+    field: 'source_id',
   })
-  source_id: number;
-
-  @Column({
-    type: DataType.ENUM(
-      'qualys',
-      'nessus',
-      'invicti',
-      'ms-defender-cloud',
-      'ms-defender-endpoint',
-      'cycognito',
-      'tenable-io',
-      'tenable-sc',
-      'cisco-workload',
-    ),
-    allowNull: false,
-  })
-  origin_source: string;
-
-  @Column({
-    type: DataType.ENUM(
-      'qualys',
-      'nessus',
-      'invicti',
-      'ms-defender-cloud',
-      'ms-defender-endpoint',
-      'cycognito',
-      'tenable-io',
-      'tenable-sc',
-      'cisco-workload',
-    ),
-    allowNull: false,
-  })
-  engine_source: string;
-
-  @Column({ type: DataType.TEXT })
-  external_id: string;
-
-  @Column({ type: DataType.BOOLEAN })
-  ssl_encrypted: boolean;
+  sourceId: string;
 
   @Column({
     type: DataType.STRING,
@@ -82,36 +53,49 @@ export class Issue extends Model<
   })
   severity: number;
 
-  @Column({ type: DataType.STRING })
-  cve_info: string;
-
-  @Column({ type: DataType.INTEGER })
+  @Column({
+    type: DataType.INTEGER,
+    allowNull: false,
+  })
   confidence: number;
 
-  @Column({ type: DataType.STRING })
+  @Column({
+    type: DataType.STRING,
+    allowNull: false,
+  })
   category: string;
 
-  @Column({ type: DataType.TEXT })
-  description: string;
-
-  @Column({ type: DataType.TEXT })
-  risk: string;
-
-  @Column({ type: DataType.TEXT })
-  mitigation: string;
-
-  @Column({ type: DataType.STRING })
-  exploit: string;
+  @Column({
+    type: DataType.STRING,
+    allowNull: false,
+    field: 'issue_category',
+  })
+  issueCategory: string;
 
   @Column({
-    type: DataType.DATE,
-    defaultValue: new Date(),
+    type: DataType.STRING,
+    allowNull: false,
+    field: 'issue_subcategory',
   })
-  created_at: Date;
+  issueSubcategory: string;
 
-  @Column({
-    type: DataType.DATE,
-    defaultValue: new Date(),
-  })
-  updated_at: Date;
+  @Column({ type: DataType.STRING, field: 'cve_info' })
+  cveInfo?: string;
+
+  @Column({ type: DataType.TEXT })
+  description?: string;
+
+  @Column({ type: DataType.TEXT })
+  risk?: string;
+
+  @Column({ type: DataType.TEXT })
+  mitigation?: string;
+
+  @CreatedAt
+  @Column({ field: 'created_at' })
+  createdAt?: Date;
+
+  @UpdatedAt
+  @Column({ field: 'updated_at' })
+  updatedAt?: Date;
 }
