@@ -1,6 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 
 import { IssueDrizzle } from '../../database/repositories/issue.drizzle';
+import { IssueNative } from '../../database/repositories/issue.native';
 import { IssueRepository } from '../../database/repositories/issue.repository';
 import { poolpool } from '../../utils/Poolpool';
 import UUID from '../../utils/uuid.util';
@@ -10,6 +11,7 @@ export class IssueService {
   constructor(
     private readonly issueDrizzle: IssueDrizzle,
     private readonly issueRepo: IssueRepository,
+    private readonly issueNative: IssueNative,
   ) {}
 
   async createIssueWithSequelize() {
@@ -40,9 +42,28 @@ export class IssueService {
 
     try {
       const res = await this.issueRepo.bulkUpsert(issues);
+
       return res;
     } catch (error) {
-      console.log('error =>\n', error);
+      console.error('error =>\n', error);
+    }
+  }
+
+  async createIssueWithNativeClient() {
+    try {
+      const res = await this.issueNative.createIssuesWithClient();
+      return res;
+    } catch (error) {
+      console.error('error =>\n', error);
+    }
+  }
+
+  async createIssueWithNativePool() {
+    try {
+      const res = await this.issueNative.createIssueWithPool();
+      return res;
+    } catch (error) {
+      console.error('error =>\n', error);
     }
   }
 
@@ -59,8 +80,8 @@ export class IssueService {
     }
   }
 
-  async createIssueWithDrizzle() {
-    const orgId = '10101010-d990-4ac3-80c3-8872be0a1a6c';
+  async createIssueWithDrizzle(orgId?: string) {
+    const activeOrgId = orgId || '10101010-d990-4ac3-80c3-8872be0a1a6c';
     const issues = [
       {
         id: UUID.generate().slice(0, 16),
@@ -86,12 +107,13 @@ export class IssueService {
       },
     ];
 
-    const trx = await poolpool.createTransaction(orgId);
+    const trx = await poolpool.createTransaction(activeOrgId);
     try {
       const res = await this.issueDrizzle.bulkUpsert(issues, trx);
       await trx.commit();
       return res;
     } catch (error) {
+      console.log('error =>\n', error);
       await trx.rollback();
     }
   }

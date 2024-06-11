@@ -17,7 +17,6 @@ export class UserRepo {
     const query = bulkInsert(rows);
     try {
       const result = await trx.query(query.sql, query.parameters);
-      Logger.log('Done');
       return result;
     } catch (error) {
       Logger.log('Error');
@@ -42,8 +41,6 @@ export class UserRepo {
     } finally {
       // client.release()
     }
-    Logger.log('hahaha');
-
     return false;
   }
 
@@ -67,7 +64,6 @@ export class UserRepo {
     } finally {
       client.release();
     }
-    Logger.log('Done');
     return true;
   }
 }
